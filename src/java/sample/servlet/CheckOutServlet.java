@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package sample.servlet;
 
 import java.io.IOException;
@@ -25,7 +24,7 @@ import sample.product.ProductDTO;
  * @author Frost
  */
 public class CheckOutServlet extends HttpServlet {
-    
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -43,26 +42,48 @@ public class CheckOutServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Your Cart</title>");            
+            out.println("<title>Result</title>");
             out.println("</head>");
             out.println("<body>");
-            
+
             String name = request.getParameter("name");
             String address = request.getParameter("address");
             String email = request.getParameter("email");
             String phone = request.getParameter("phone");
-            CustomerDTO cus = new CustomerDTO(name, address, email, phone);
-            
-            List<ProductDTO> cart = (List<ProductDTO>) request.getSession().getAttribute("Cart");
-            OrderDAO dao = new OrderDAO();
-            boolean checked = dao.order(cus, cart);
-            
-            if (checked) {
-                out.println("<h2>Thank you for buying, see you agian!</h2>");
-                request.getSession().invalidate();
+
+            boolean invalid = false;
+            if (name.isEmpty() || address.isEmpty() || email.isEmpty() || phone.isEmpty()) {
+                out.println("<h2>All fields can not be empty, please try agian</h2>");
+                out.println("<a href='ProcessServlet?btAction=Continue'>Back to chek out</a>");
+            } else {
+                if (!email.matches("\\w+@\\w+.\\w+")) {
+                    out.println("<h2>Email is invalid</h2>");
+                    invalid = true;
+                }
+
+                try {
+                    Integer.parseInt(phone);
+                } catch (Exception e) {
+                    out.println("<h2>Phone is invalid</h2>");
+                    invalid = true;
+                }
+
+                if (invalid) {
+                    out.println("<a href='ProcessServlet?btAction=Continue'>Back to chek out</a>");
+                } else {
+                    CustomerDTO cus = new CustomerDTO(name, address, email, phone);
+
+                    List<ProductDTO> cart = (List<ProductDTO>) request.getSession().getAttribute("Cart");
+                    boolean checked = new OrderDAO().order(cus, cart);
+
+                    if (checked) {
+                        out.println("<h2>Thank you for buying, see you agian!</h2>");
+                        request.getSession().invalidate();
+                    }
+                }
             }
-            
-            out.println("<a href='Welcome.html'>Back to main page</a");
+
+            out.println("<a href='Welcome.html'>Back to main page</a>");
             out.println("</body>");
             out.println("</html>");
         } catch (ClassNotFoundException ex) {
