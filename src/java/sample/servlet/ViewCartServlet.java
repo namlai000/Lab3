@@ -120,7 +120,7 @@ public class ViewCartServlet extends HttpServlet {
             out.println("</tbody>");
             out.println("</table>");
             
-            out.println("Total: " + count + " products selected - Payment in USD: " + sum + "</br>");
+            out.println("Total: " + count + " products selected! - Payment in USD: " + sum + "</br>");
             
             if (exist) {
                 out.println("<form action='ProcessServlet'>");
