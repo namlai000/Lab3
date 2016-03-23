@@ -54,7 +54,8 @@ public class CheckOutServlet extends HttpServlet {
             CustomerDTO cus = new CustomerDTO(name, address, email, phone);
             
             List<ProductDTO> cart = (List<ProductDTO>) request.getSession().getAttribute("Cart");
-            boolean checked = new OrderDAO().order(cus, cart);
+            OrderDAO dao = new OrderDAO();
+            boolean checked = dao.order(cus, cart);
             
             if (checked) {
                 out.println("<h2>Thank you for buying, see you agian!</h2>");
