@@ -65,15 +65,20 @@ public class ViewCartServlet extends HttpServlet {
             double sum = 0;
             if (cart != null && !cart.isEmpty()) {
                 exist = true;
+                out.println("<form action='ProcessServlet' id='delete'></form>");
+                out.println("<form action='ProcessServlet' id='update'></form>");
+                
                 for (ProductDTO pd: cart) {
-                    out.println("<form action='ProcessServlet'>");
+                    out.println("<input type='hidden' form='delete' name='pk' "
+                            + "value='" + pd.getID() + "'/>");
+                    
                     out.println("<tr>");
                     out.println("<td>"
                             + ++count
                             + "</td>");
                     out.println("<td>"
                             + pd.getID()
-                            + "<input type='hidden' name='pk' value='"
+                            + "<input type='hidden' name='pk' form='update' value='" 
                             + pd.getID()
                             + "'/>"
                             + "</td>");
@@ -87,23 +92,27 @@ public class ViewCartServlet extends HttpServlet {
                             + pd.getPrice()
                             + "</td>");
                     out.println("<td>"
-                            + "<input type='text' name='quantity' value='"
+                            + "<input type='text' form='update' name='quantity' value='"
                             + pd.getQuantity()
                             + "'/>"
                             + "</td>");
                     out.println("<td>"
                             + pd.getTotal()
-                            + "</td>");
-                    
-                    String urlRewriting = "ProcessServlet?btAction=Delete&pk="
-                            + pd.getID();
-                    out.println("<td><a href='" + urlRewriting + "'>Delete</a></td>");
-                    out.println("<td><input type='submit' value='Update' name='btAction'/></td>");
+                            + "</td>");    
+                    out.println("<td><input type='checkbox' form='delete' name='chkProduct' value='"
+                            + pd.getID()
+                            + "'/></td>");
+                    out.println("<td><input type='submit' form='update' value='Update' name='btAction'/></td>");
                     out.println("</tr>");
-                    out.println("</form>");
                     
                     sum += pd.getTotal();
                 }
+                
+                out.println("<tr>");
+                out.println("<td colspan='7'></td>");
+                out.println("<td><input type='submit' form='delete' value='Delete' name='btAction'/></td>"); 
+                out.println("<td></td>"); 
+                out.println("</tr>");
             } else {
                 out.println("You dont have any cart </br>");
             }

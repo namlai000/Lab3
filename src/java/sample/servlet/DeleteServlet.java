@@ -35,13 +35,17 @@ public class DeleteServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         try {
-            String pk = request.getParameter("pk");
-            int id = Integer.parseInt(pk);
-            
+            String[] id = request.getParameterValues("chkProduct");
             List<ProductDTO> cart = (List<ProductDTO>) request.getSession().getAttribute("Cart");
-            for (int i = 0; i < cart.size(); i++) {
-                if (cart.get(i).getID() == id) {
-                    cart.remove(i);
+            
+            if (id != null) {
+                for (String itemID: id) {
+                    int key = Integer.parseInt(itemID);
+                    for (int i = 0 ; i < cart.size(); i++) {
+                        if (cart.get(i).getID() == key) {
+                            cart.remove(i);
+                        }
+                    }
                 }
             }
             

@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package sample.servlet;
 
 import java.io.IOException;
@@ -36,15 +35,24 @@ public class UpdateServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         try {
             int id = Integer.parseInt(request.getParameter("pk"));
-            int quantity = Integer.parseInt(request.getParameter("quantity"));
-            
+            String quantity = request.getParameter("quantity");
+
             List<ProductDTO> cart = (List<ProductDTO>) request.getSession().getAttribute("Cart");
-            for (ProductDTO d: cart) {
+            for (ProductDTO d : cart) {
                 if (d.getID() == id) {
-                    d.setQuantity(quantity);
+                    if (!quantity.isEmpty()) {
+                        int quan;
+                        try {
+                            quan = Integer.parseInt(quantity);
+                        } catch (Exception e) {
+                            quan = d.getQuantity();
+                        }
+                        
+                        d.setQuantity(quan);
+                    }
                 }
             }
-            
+
             request.getSession().setAttribute("Cart", cart);
             String urlRewriting = "ProcessServlet?btAction=ViewCart";
             response.sendRedirect(urlRewriting);
