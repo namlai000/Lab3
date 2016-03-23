@@ -65,9 +65,9 @@ public class CheckOutServlet extends HttpServlet {
             out.println("</body>");
             out.println("</html>");
         } catch (ClassNotFoundException ex) {
-            ex.printStackTrace();
+            log("check out servlet error: " + ex.getMessage());
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            log("check out servlet error: " + ex.getMessage());
         } finally {
             out.close();
         }

@@ -98,9 +98,9 @@ public class DisplayServlet extends HttpServlet {
             out.println("</body>");
             out.println("</html>");
         } catch (ClassNotFoundException ex) {
-            ex.printStackTrace();
+            log("display products servlet error: " + ex.getMessage());
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            log("dispaly products servlet error: " + ex.getMessage());
         } finally {
             out.close();
         }

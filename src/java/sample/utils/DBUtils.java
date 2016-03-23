@@ -18,9 +18,9 @@ import java.sql.SQLException;
 public class DBUtils implements Serializable {
     public static Connection makeConnection() 
             throws ClassNotFoundException, SQLException {
-        String url = "jdbc:sqlserver://localhost:1433;databaseName=Product";
+        String url = "jdbc:sqlserver://fpthomework.database.windows.net:1433;database=Product;user=namlai000;password=Namlai120;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;";
         Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-        Connection con = DriverManager.getConnection(url, "sa", "namlai120");
+        Connection con = DriverManager.getConnection(url);
         return con;
     }
 }

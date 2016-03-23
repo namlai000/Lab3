@@ -71,9 +71,9 @@ public class AddToCartServlet extends HttpServlet {
             String urlRewriting = "ProcessServlet?btAction=Display";
             response.sendRedirect(urlRewriting);
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            log("Add to cart servlet error: " + ex.getMessage());
         } catch (ClassNotFoundException ex) {
-            ex.printStackTrace();
+            log("Add to cart servlet error: " + ex.getMessage());
         } finally {
             out.close();
         }
