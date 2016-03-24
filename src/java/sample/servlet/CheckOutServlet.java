@@ -15,8 +15,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import sample.product.CustomerDAO;
 import sample.product.CustomerDTO;
 import sample.product.OrderDAO;
+import sample.product.OrderDetailsDAO;
 import sample.product.ProductDTO;
 
 /**
@@ -72,9 +74,15 @@ public class CheckOutServlet extends HttpServlet {
                     out.println("<a href='ProcessServlet?btAction=Continue'>Back to chek out</a>");
                 } else {
                     CustomerDTO cus = new CustomerDTO(name, address, email, phone);
-
                     List<ProductDTO> cart = (List<ProductDTO>) request.getSession().getAttribute("Cart");
-                    boolean checked = new OrderDAO().order(cus, cart);
+                    
+                    int customerID = new CustomerDAO().customerIntoStore(cus);
+                    int orderID = new OrderDetailsDAO().orderDetailsStore(cart);
+                    
+                    boolean checked = false;
+                    if (customerID > 0 && orderID > 0) {
+                        checked = new OrderDAO().orderStore(customerID, orderID);
+                    }
 
                     if (checked) {
                         out.println("<h2>Thank you for buying, see you agian!</h2>");

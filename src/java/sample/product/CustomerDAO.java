@@ -13,40 +13,53 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import sample.utils.DBUtils;
 
 /**
  *
  * @author Frost
  */
-public class OrderDAO {
-    public boolean orderStore(int customerID, int orderID) 
+public class CustomerDAO {
+    public int customerIntoStore(CustomerDTO customer) 
             throws ClassNotFoundException, SQLException {
         Connection con = null;
+        int customerID;
         String sql;
         ResultSet rs = null;
         PreparedStatement stm = null;
-        boolean inserted = false;
+        Statement stm2 = null;
         
         try {
             con = DBUtils.makeConnection();
-            sql = "INSERT INTO Orders VALUES(?,?,?)";
-            stm = con.prepareStatement(sql);
-            stm.setInt(1, orderID);
-            stm.setInt(2, customerID);
-            SimpleDateFormat df = new SimpleDateFormat("mm/dd/yyyy");
-            String date = df.format(new Date());
-            stm.setString(3, date);
-            stm.executeUpdate();
+            sql = "SELECT MAX(id) FROM Customer";
+            stm2 = con.createStatement();
+            rs = stm2.executeQuery(sql);
+            if (rs.next()) {
+                customerID = rs.getInt(1) + 1;
+            } else {
+                customerID = 1;
+            }
+            rs.close();
             
-            inserted = true;
+            sql = "INSERT INTO Customer VALUES(?,?,?,?,?)";
+            stm = con.prepareStatement(sql);
+            stm.setInt(1, customerID);
+            stm.setString(2, customer.getName());
+            stm.setString(3, customer.getAddress());
+            stm.setString(4, customer.getEmail());
+            stm.setString(5, customer.getPhone());
+            int row = stm.executeUpdate();
+            
+            if (row == 0) {
+                customerID = -1;
+            }
         } finally {
             if (rs != null) rs.close();
             if (stm != null) stm.close();
+            if (stm2 != null) stm2.close();
             if (con != null) con.close();
         }
         
-        return inserted;
+        return customerID;
     }
 }
