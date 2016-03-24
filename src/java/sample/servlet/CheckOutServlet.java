@@ -75,18 +75,23 @@ public class CheckOutServlet extends HttpServlet {
                 } else {
                     CustomerDTO cus = new CustomerDTO(name, address, email, phone);
                     List<ProductDTO> cart = (List<ProductDTO>) request.getSession().getAttribute("Cart");
-                    
-                    int customerID = new CustomerDAO().customerIntoStore(cus);
-                    int orderID = new OrderDetailsDAO().orderDetailsStore(cart);
-                    
-                    boolean checked = false;
-                    if (customerID > 0 && orderID > 0) {
-                        checked = new OrderDAO().orderStore(customerID, orderID);
-                    }
 
-                    if (checked) {
-                        out.println("<h2>Thank you for buying, see you agian!</h2>");
-                        request.getSession().invalidate();
+                    if (cart != null && !cart.isEmpty()) {
+                        int customerID = new CustomerDAO().customerIntoStore(cus);
+                        int orderID = new OrderDetailsDAO().orderDetailsStore(cart);
+
+                        boolean checked = false;
+                        if (customerID > 0 && orderID > 0) {
+                            checked = new OrderDAO().orderStore(customerID, orderID);
+                        }
+
+                        if (checked) {
+                            out.println("<h2>Thank you for buying, see you agian!</h2>");
+                            request.getSession().invalidate();
+                        }
+                    } else {
+                        out.println("<h2>Cart is empty</h2>");
+                        out.println("<a href='ProcessServlet?btAction=Continue'>Back to chek out</a>");
                     }
                 }
             }
